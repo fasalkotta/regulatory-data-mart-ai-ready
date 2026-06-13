@@ -6,6 +6,7 @@ __pycache__/
 dbt/target/
 dbt/logs/
 dbt/.user.yml
+**/.user.yml
 airflow/logs/
 dashboard/.streamlit/secrets.toml
 *.db
@@ -15,6 +16,8 @@ dashboard/.streamlit/secrets.toml
 profiles.yml
 dbt/profiles.yml
 **/profiles.yml
+!.github/dbt_profiles/
+!.github/dbt_profiles/profiles.yml
 secrets.toml
 .idea/
 airflow/docker/.env
