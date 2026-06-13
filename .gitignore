@@ -15,3 +15,5 @@ dashboard/.streamlit/secrets.toml
 profiles.yml
 dbt/profiles.yml
 **/profiles.yml
+secrets.toml
+.idea/
