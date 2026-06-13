@@ -10,22 +10,64 @@ def render_header() -> None:
     )
 
 
-def render_sidebar_filters(report_df: pd.DataFrame) -> pd.DataFrame:
+def _string_options(df: pd.DataFrame, column_name: str) -> list[str]:
+    return sorted(df[column_name].dropna().astype(str).unique().tolist())
+
+
+def _filter_by_string_value(df: pd.DataFrame, column_name: str, selected_value: str) -> pd.DataFrame:
+    if selected_value == "ALL":
+        return df
+
+    return df[df[column_name].astype(str) == selected_value]
+
+
+def render_sidebar_filters(report_df: pd.DataFrame, dq_df: pd.DataFrame) -> dict[str, str]:
     st.sidebar.header("Filters")
+
+    month_options = ["ALL"] + _string_options(report_df, "REPORTING_MONTH")
+    selected_month = st.sidebar.selectbox("Reporting month", month_options)
+
+    entity_options = ["ALL"] + _string_options(report_df, "LEGAL_ENTITY_NAME")
+    selected_entity = st.sidebar.selectbox("Legal entity", entity_options)
 
     status_options = ["ALL"] + sorted(report_df["REPORT_STATUS"].dropna().unique().tolist())
     selected_status = st.sidebar.selectbox("Report status", status_options)
 
-    entity_options = ["ALL"] + sorted(report_df["LEGAL_ENTITY_NAME"].dropna().unique().tolist())
-    selected_entity = st.sidebar.selectbox("Legal entity", entity_options)
+    severity_options = ["ALL"] + sorted(dq_df["SEVERITY"].dropna().unique().tolist())
+    selected_severity = st.sidebar.selectbox("DQ severity", severity_options)
 
+    return {
+        "reporting_month": selected_month,
+        "legal_entity": selected_entity,
+        "report_status": selected_status,
+        "dq_severity": selected_severity,
+    }
+
+
+def filter_regulatory_report(report_df: pd.DataFrame, filters: dict[str, str]) -> pd.DataFrame:
     filtered_df = report_df.copy()
 
-    if selected_status != "ALL":
-        filtered_df = filtered_df[filtered_df["REPORT_STATUS"] == selected_status]
+    filtered_df = _filter_by_string_value(filtered_df, "REPORTING_MONTH", filters["reporting_month"])
+    filtered_df = _filter_by_string_value(filtered_df, "LEGAL_ENTITY_NAME", filters["legal_entity"])
+    filtered_df = _filter_by_string_value(filtered_df, "REPORT_STATUS", filters["report_status"])
 
-    if selected_entity != "ALL":
-        filtered_df = filtered_df[filtered_df["LEGAL_ENTITY_NAME"] == selected_entity]
+    return filtered_df
+
+
+def filter_dq_exceptions(dq_df: pd.DataFrame, filters: dict[str, str]) -> pd.DataFrame:
+    filtered_df = dq_df.copy()
+
+    filtered_df = _filter_by_string_value(filtered_df, "REPORTING_MONTH", filters["reporting_month"])
+    filtered_df = _filter_by_string_value(filtered_df, "LEGAL_ENTITY_NAME", filters["legal_entity"])
+    filtered_df = _filter_by_string_value(filtered_df, "SEVERITY", filters["dq_severity"])
+
+    return filtered_df
+
+
+def filter_reconciliation(reconciliation_df: pd.DataFrame, filters: dict[str, str]) -> pd.DataFrame:
+    filtered_df = reconciliation_df.copy()
+
+    filtered_df = _filter_by_string_value(filtered_df, "REPORTING_MONTH", filters["reporting_month"])
 
     return filtered_df
 
@@ -46,6 +88,10 @@ def render_summary_metrics(filtered_df: pd.DataFrame) -> None:
 def render_report_status_distribution(filtered_df: pd.DataFrame) -> None:
     st.subheader("Report Status Distribution")
 
+    if filtered_df.empty:
+        st.info("No report rows match the selected filters.")
+        return
+
     status_counts = (
         filtered_df.groupby("REPORT_STATUS", as_index=False)
         .size()
@@ -63,6 +109,10 @@ def render_report_table(filtered_df: pd.DataFrame) -> None:
 def render_dq_exceptions(dq_df: pd.DataFrame) -> None:
     st.subheader("Data Quality Exceptions")
     st.caption("DQ exceptions explain why reporting rows may need REVIEW or BLOCKED handling.")
+
+    if dq_df.empty:
+        st.info("No DQ exceptions match the selected filters.")
+        return
 
     dq_col1, dq_col2 = st.columns(2)
 
@@ -90,6 +140,11 @@ def render_dq_exceptions(dq_df: pd.DataFrame) -> None:
 def render_reconciliation(reconciliation_df: pd.DataFrame) -> None:
     st.subheader("Reconciliation Status")
     st.caption("Reconciliation compares raw, staging, core, OBT, and mart outputs by reporting month.")
+
+    if reconciliation_df.empty:
+        st.info("No reconciliation rows match the selected reporting month.")
+        return
+
     st.dataframe(reconciliation_df, use_container_width=True)
 
 
@@ -114,4 +169,3 @@ def render_metric_definitions(metric_definitions: list[dict]) -> None:
             if metric.get("human_review_required_when"):
                 st.markdown("**Human Review Required When**")
                 st.write(metric["human_review_required_when"])
-
