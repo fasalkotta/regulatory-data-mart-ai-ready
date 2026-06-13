@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: dim_legal_entity
+    description: One row per legal entity used for regulatory reporting.
+    columns:
+      - name: legal_entity_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_jurisdiction
+    description: One row per jurisdiction with compliance risk flags.
+    columns:
+      - name: jurisdiction_code
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_customer_scd
+    description: Customer and legal entity assignment history for point-in-time reporting.
+    columns:
+      - name: customer_scd_key
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+      - name: kyc_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['APPROVED', 'PENDING', 'REJECTED']
+      - name: risk_rating
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['LOW', 'MEDIUM', 'HIGH']
+
+  - name: fact_transaction
+    description: One row per source transaction with point-in-time customer and entity context.
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null
+      - name: transaction_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['SETTLED', 'PENDING', 'FAILED']
+      - name: customer_scd_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customer_scd')
+                field: customer_scd_key
+      - name: legal_entity_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_legal_entity')
+                field: legal_entity_id
+      - name: jurisdiction_code
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_jurisdiction')
+                field: jurisdiction_code
+
+  - name: obt_regulatory_transaction
+    description: Transaction-grain self-serve model joining facts and regulatory dimensions.
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null
+      - name: transaction_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['SETTLED', 'PENDING', 'FAILED']

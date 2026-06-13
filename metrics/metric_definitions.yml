@@ -1,0 +1,98 @@
+version: 1
+
+metrics:
+  - metric_name: reportable_settled_volume_usd
+    owner: regulatory_analytics
+    business_definition: >
+      Total USD value of settled reportable customer transactions for a legal entity,
+      jurisdiction, and reporting month.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: reportable_settled_volume_usd
+    required_filters:
+      - transaction_status = 'SETTLED'
+    required_grouping:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    caveats:
+      - Pending, failed, and rejected transactions are excluded from settled volume.
+      - Outputs with report_status REVIEW or BLOCKED require human review before external use.
+    human_review_required_when:
+      - report_status in ('REVIEW', 'BLOCKED')
+      - reconciliation_status != 'PASS'
+      - unresolved BLOCKED severity DQ exceptions exist
+
+  - metric_name: settled_transaction_count
+    owner: regulatory_analytics
+    business_definition: >
+      Count of settled customer transactions included in monthly entity-level regulatory reporting.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: settled_transaction_count
+    required_filters:
+      - transaction_status = 'SETTLED'
+    caveats:
+      - Duplicate transaction IDs must be reviewed through the DQ exception summary.
+
+  - metric_name: active_customer_count
+    owner: regulatory_analytics
+    business_definition: >
+      Count of distinct customers with at least one transaction in the reporting month,
+      legal entity, and jurisdiction.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: active_customer_count
+    caveats:
+      - Customer identity is sourced from the customer master extract.
+      - Missing customer records are treated as BLOCKED DQ exceptions.
+
+  - metric_name: high_risk_settled_volume_usd
+    owner: regulatory_analytics
+    business_definition: >
+      Settled USD volume associated with customers whose risk rating is HIGH at the
+      transaction reporting point.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: high_risk_settled_volume_usd
+    required_filters:
+      - risk_rating = 'HIGH'
+      - transaction_status = 'SETTLED'
+    caveats:
+      - Risk rating must be interpreted point-in-time using dim_customer_scd.
+      - High-risk activity may require Compliance review even when reconciliation passes.
+
+  - metric_name: report_status
+    owner: regulatory_analytics
+    business_definition: >
+      Reporting readiness status for an entity-month-jurisdiction row.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: report_status
+    accepted_values:
+      - PASS
+      - REVIEW
+      - BLOCKED
+    status_logic:
+      PASS: No current review or blocking condition identified by mart logic.
+      REVIEW: Pending KYC or high-risk jurisdiction activity exists and requires Compliance review.
+      BLOCKED: Rejected KYC activity exists and the row should not be used for final reporting.
+    caveats:
+      - PASS does not mean externally filed; it means no modeled issue was detected.
+      - Final regulatory submission still requires human sign-off.
+

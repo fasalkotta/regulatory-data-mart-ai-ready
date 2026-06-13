@@ -1,0 +1,84 @@
+version: 1
+
+contracts:
+  - model_name: raw_transactions
+    physical_object: REGULATORY_ANALYTICS.RAW.RAW_TRANSACTIONS
+    owner: upstream_engineering
+    consumer: regulatory_analytics
+    expected_grain: one row per source transaction event
+    required_columns:
+      - transaction_id
+      - customer_id
+      - transaction_timestamp
+      - asset_symbol
+      - transaction_type
+      - transaction_status
+      - gross_usd_amount
+      - fee_usd_amount
+      - jurisdiction_code
+    accepted_values:
+      transaction_status:
+        - SETTLED
+        - PENDING
+        - FAILED
+    quality_rules:
+      - transaction_id must not be null
+      - transaction_timestamp must not be null
+      - gross_usd_amount should be non-negative for valid transactions
+      - duplicate transaction_id values must be surfaced as BLOCKED DQ exceptions
+
+  - model_name: dim_customer_scd
+    physical_object: REGULATORY_ANALYTICS.DEV_FASAL_CORE.DIM_CUSTOMER_SCD
+    owner: regulatory_analytics
+    consumer: regulatory_mart
+    expected_grain: one row per customer legal entity assignment history period
+    required_columns:
+      - customer_scd_key
+      - customer_id
+      - legal_entity_id
+      - risk_rating
+      - kyc_status
+      - valid_from
+      - valid_to
+      - is_current
+    accepted_values:
+      risk_rating:
+        - LOW
+        - MEDIUM
+        - HIGH
+      kyc_status:
+        - APPROVED
+        - PENDING
+        - REJECTED
+    quality_rules:
+      - customer_scd_key must be unique
+      - customer_id must not be null
+      - transaction joins must use valid_from and valid_to for point-in-time accuracy
+
+  - model_name: mart_entity_monthly_regulatory_report
+    physical_object: REGULATORY_ANALYTICS.DEV_FASAL_MARTS.MART_ENTITY_MONTHLY_REGULATORY_REPORT
+    owner: regulatory_analytics
+    consumer:
+      - compliance
+      - legal
+      - business_operations
+    expected_grain: one row per reporting month, legal entity, and jurisdiction
+    required_columns:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+      - reportable_settled_volume_usd
+      - settled_transaction_count
+      - active_customer_count
+      - report_status
+    accepted_values:
+      report_status:
+        - PASS
+        - REVIEW
+        - BLOCKED
+    quality_rules:
+      - report_status must not be null
+      - reportable_settled_volume_usd must not be null
+      - REVIEW and BLOCKED rows require human review before external reporting
+      - mart totals must reconcile to OBT totals within tolerance
+
