@@ -1,0 +1,6 @@
+legal_entity_id,legal_entity_name,entity_country_code,entity_type,is_active,source_system,loaded_at
+LE_UK,Coinbase UK Ltd,GB,OPERATING_ENTITY,TRUE,legal_entity_registry,2026-06-12 10:00:00
+LE_IE,Coinbase Ireland Ltd,IE,OPERATING_ENTITY,TRUE,legal_entity_registry,2026-06-12 10:00:00
+LE_DE,Coinbase Germany GmbH,DE,OPERATING_ENTITY,TRUE,legal_entity_registry,2026-06-12 10:00:00
+LE_ARCHIVE,Archived EU Entity,IE,LEGACY_ENTITY,FALSE,legal_entity_registry,2026-06-12 10:00:00
+

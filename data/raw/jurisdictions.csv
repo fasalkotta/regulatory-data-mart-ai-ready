@@ -1,0 +1,8 @@
+jurisdiction_code,jurisdiction_name,region,is_high_risk,source_system,loaded_at
+GB,United Kingdom,Europe,FALSE,compliance_reference,2026-06-12 10:00:00
+IE,Ireland,Europe,FALSE,compliance_reference,2026-06-12 10:00:00
+DE,Germany,Europe,FALSE,compliance_reference,2026-06-12 10:00:00
+FR,France,Europe,FALSE,compliance_reference,2026-06-12 10:00:00
+NG,Nigeria,Africa,TRUE,compliance_reference,2026-06-12 10:00:00
+RU,Russia,Europe Asia,TRUE,compliance_reference,2026-06-12 10:00:00
+

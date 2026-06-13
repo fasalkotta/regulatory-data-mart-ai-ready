@@ -1,0 +1,8 @@
+rule_id,legal_entity_id,jurisdiction_code,metric_name,rule_description,is_reportable,effective_from,effective_to,source_system,loaded_at
+RULE_001,LE_UK,GB,REPORTABLE_SETTLED_VOLUME_USD,Settled customer transactions for Coinbase UK monthly reporting,TRUE,2026-01-01,,regulatory_policy_registry,2026-06-12 10:00:00
+RULE_002,LE_IE,IE,REPORTABLE_SETTLED_VOLUME_USD,Settled customer transactions for Coinbase Ireland monthly reporting,TRUE,2026-01-01,,regulatory_policy_registry,2026-06-12 10:00:00
+RULE_003,LE_DE,DE,REPORTABLE_SETTLED_VOLUME_USD,Settled customer transactions for Coinbase Germany monthly reporting,TRUE,2026-01-01,,regulatory_policy_registry,2026-06-12 10:00:00
+RULE_004,LE_IE,FR,REPORTABLE_SETTLED_VOLUME_USD,French customers served by Coinbase Ireland are included in Ireland EU reporting,TRUE,2026-01-01,,regulatory_policy_registry,2026-06-12 10:00:00
+RULE_005,LE_IE,NG,HIGH_RISK_JURISDICTION_VOLUME_USD,High-risk jurisdiction volume requires review before sign-off,TRUE,2026-01-01,,regulatory_policy_registry,2026-06-12 10:00:00
+RULE_006,LE_IE,RU,HIGH_RISK_JURISDICTION_VOLUME_USD,Sanction-sensitive jurisdiction volume requires blocked review before sign-off,TRUE,2026-01-01,,regulatory_policy_registry,2026-06-12 10:00:00
+
