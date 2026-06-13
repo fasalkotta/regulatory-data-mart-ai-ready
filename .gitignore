@@ -10,3 +10,6 @@ airflow/logs/
 *.sqlite
 *.duckdb
 .DS_Store
+profiles.yml
+dbt/profiles.yml
+**/profiles.yml

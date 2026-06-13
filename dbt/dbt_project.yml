@@ -1,0 +1,29 @@
+name: regulatory_data_mart_ai_ready
+version: "1.0.0"
+config-version: 2
+
+profile: regulatory_data_mart_ai_ready
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  regulatory_data_mart_ai_ready:
+    staging:
+      +schema: STAGING
+      +materialized: view
+    core:
+      +schema: CORE
+      +materialized: table
+    marts:
+      +schema: MARTS
+      +materialized: table
+    governance:
+      +schema: GOVERNANCE
+      +materialized: table
