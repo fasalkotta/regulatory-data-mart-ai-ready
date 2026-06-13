@@ -1,0 +1,48 @@
+version: 2
+
+sources:
+  - name: raw
+    database: REGULATORY_ANALYTICS
+    schema: RAW
+    description: Source-shaped regulatory reporting extracts loaded into Snowflake.
+    tables:
+      - name: RAW_LEGAL_ENTITIES
+        description: Legal entity reference extract maintained by Legal or entity operations.
+        columns:
+          - name: legal_entity_id
+            tests:
+              - not_null
+      - name: RAW_JURISDICTIONS
+        description: Jurisdiction reference extract maintained by Compliance.
+        columns:
+          - name: jurisdiction_code
+            tests:
+              - not_null
+      - name: RAW_CUSTOMERS
+        description: Customer master extract with KYC and risk attributes.
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+      - name: RAW_CUSTOMER_ENTITY_ASSIGNMENTS
+        description: Point-in-time customer to legal entity assignment extract.
+        columns:
+          - name: customer_id
+            tests:
+              - not_null
+          - name: legal_entity_id
+            tests:
+              - not_null
+      - name: RAW_REGULATORY_RULES
+        description: Regulatory reporting rules by legal entity, jurisdiction, and metric.
+        columns:
+          - name: rule_id
+            tests:
+              - not_null
+      - name: RAW_TRANSACTIONS
+        description: Source transaction extract from the exchange transaction system.
+        columns:
+          - name: transaction_id
+            tests:
+              - not_null
+
