@@ -17,3 +17,5 @@ dbt/profiles.yml
 **/profiles.yml
 secrets.toml
 .idea/
+airflow/docker/.env
+airflow/logs/
