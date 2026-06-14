@@ -77,12 +77,18 @@ def render_summary_metrics(filtered_df: pd.DataFrame) -> None:
     total_transactions = filtered_df["TOTAL_TRANSACTION_COUNT"].sum()
     active_customers = filtered_df["ACTIVE_CUSTOMER_COUNT"].sum()
     blocked_rows = (filtered_df["REPORT_STATUS"] == "BLOCKED").sum()
+    cross_border_count = filtered_df["HIGH_VALUE_CROSS_BORDER_TRANSACTION_COUNT"].sum()
+    cross_border_volume = filtered_df["HIGH_VALUE_CROSS_BORDER_SETTLED_VOLUME_USD"].sum()
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Settled Volume USD", f"${total_volume:,.0f}")
     col2.metric("Total Transactions", f"{total_transactions:,.0f}")
     col3.metric("Active Customers", f"{active_customers:,.0f}")
     col4.metric("Blocked Report Rows", f"{blocked_rows:,.0f}")
+
+    review_col1, review_col2 = st.columns(2)
+    review_col1.metric("High-Value Cross-Border Txns", f"{cross_border_count:,.0f}")
+    review_col2.metric("High-Value Cross-Border Volume", f"${cross_border_volume:,.0f}")
 
 
 def render_report_status_distribution(filtered_df: pd.DataFrame) -> None:

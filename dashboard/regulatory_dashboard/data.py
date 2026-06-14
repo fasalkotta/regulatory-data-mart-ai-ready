@@ -45,7 +45,9 @@ def load_regulatory_report() -> pd.DataFrame:
             pending_kyc_transaction_count,
             rejected_kyc_transaction_count,
             high_risk_jurisdiction_transaction_count,
-            report_status
+            report_status,
+            high_value_cross_border_transaction_count,
+            high_value_cross_border_settled_volume_usd
         from mart_entity_monthly_regulatory_report
         order by reporting_month, legal_entity_name, jurisdiction_code
         """
@@ -91,4 +93,3 @@ def load_reconciliation_status() -> pd.DataFrame:
         order by reporting_month
         """
     )
-
