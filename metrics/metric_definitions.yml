@@ -95,4 +95,42 @@ metrics:
     caveats:
       - PASS does not mean externally filed; it means no modeled issue was detected.
       - Final regulatory submission still requires human sign-off.
+  - metric_name: high_value_cross_border_transaction_count
+    owner: regulatory_analytics
+    business_definition: >
+      Count of settled transactions where the customer country differs from the
+      legal entity country and settled volume is at least 10000 USD.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: high_value_cross_border_transaction_count
+    required_filters:
+      - transaction_status = 'SETTLED'
+      - customer_country_code != entity_country_code
+      - settled_volume_usd >= 10000
+    caveats:
+      - This metric is intended as a Compliance review signal, not an automatic filing decision.
+      - Rows with this activity should be reviewed before external regulatory use.
+    human_review_required_when:
+      - high_value_cross_border_transaction_count > 0
+      - report_status in ('REVIEW', 'BLOCKED')
+      - reconciliation_status != 'PASS'
+
+  - metric_name: high_value_cross_border_settled_volume_usd
+    owner: regulatory_analytics
+    business_definition: >
+      Settled USD volume for transactions where the customer country differs from
+      the legal entity country and settled volume is at least 10000 USD.
+    grain:
+      - reporting_month
+      - legal_entity_id
+      - jurisdiction_code
+    source_model: mart_entity_monthly_regulatory_report
+    source_column: high_value_cross_border_settled_volume_usd
+    required_filters:
+      - transaction_status = 'SETTLED'
+      - customer_country_code != entity_country_code
+      - settled
 
