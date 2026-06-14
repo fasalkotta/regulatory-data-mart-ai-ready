@@ -257,35 +257,5 @@ cd C:\regulatory-data-mart-ai-ready\airflow\docker
 docker compose up -d
 ```
 
-Airflow runs locally at:
 
-```text
-http://localhost:8080
-```
-
-Streamlit runs locally at:
-
-```text
-http://localhost:8501
-```
-
-## Interview Demo Walkthrough
-
-1. Start with the business problem: manual regulatory reporting needs trust, repeatability, and traceability.
-2. Show the architecture from raw data to marts and dashboard.
-3. Explain the dbt layers: staging, core, OBT, and marts.
-4. Open the mart models and explain reporting status, DQ exceptions, and reconciliation.
-5. Show the Streamlit dashboard.
-6. Show the governance files in `metrics/`.
-7. Explain Airflow orchestration.
-8. Explain GitHub CI and how it protects code quality before merge.
-
-## Future Improvements
-
-- Add source freshness checks to Airflow
-- Add alerting for failed reconciliation
-- Add a manually triggered CD workflow using GitHub environments and Snowflake secrets
-- Expand sample data to cover more regulatory edge cases
-- Add dbt exposures for dashboard lineage
-- Add dbt documentation site publishing
 
