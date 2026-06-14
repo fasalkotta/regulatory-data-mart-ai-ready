@@ -63,7 +63,28 @@ aggregated as (
                 when is_high_risk_jurisdiction then 1
                 else 0
             end
-        ) as high_risk_jurisdiction_transaction_count
+        ) as high_risk_jurisdiction_transaction_count,
+
+        sum(
+            case
+                when transaction_status = 'SETTLED'
+                and customer_country_code <> entity_country_code
+                and settled_volume_usd >= 10000
+                then settled_volume_usd
+                else 0
+            end
+        ) as high_value_cross_border_settled_volume_usd,
+
+        sum(
+            case
+                when transaction_status = 'SETTLED'
+                and customer_country_code <> entity_country_code
+                and settled_volume_usd >= 1
+                then 1
+                else 0
+            end
+        ) as high_value_cross_border_transaction_count
+        
 
     from regulatory_transactions
     group by
@@ -83,6 +104,7 @@ select
         when rejected_kyc_transaction_count > 0 then 'BLOCKED'
         when pending_kyc_transaction_count > 0 then 'REVIEW'
         when high_risk_jurisdiction_transaction_count > 0 then 'REVIEW'
+        when high_value_cross_border_transaction_count > 0 then 'REVIEW'
         else 'PASS'
     end as report_status
 from aggregated

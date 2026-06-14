@@ -112,6 +112,22 @@ dq_events as (
         jurisdiction_code,
         jurisdiction_name,
         transaction_id,
+        'HIGH_VALUE_CROSS_BORDER' as dq_rule_code,
+        'REVIEW' as severity
+    from transactions
+    where transaction_status = 'SETTLED'
+      and customer_country_code <> entity_country_code
+      and settled_volume_usd >= 10000
+
+    union all
+    
+    select
+        reporting_month,
+        legal_entity_id,
+        legal_entity_name,
+        jurisdiction_code,
+        jurisdiction_name,
+        transaction_id,
         'REJECTED_KYC' as dq_rule_code,
         'BLOCKED' as severity
     from transactions
