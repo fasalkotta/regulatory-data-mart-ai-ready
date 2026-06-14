@@ -51,6 +51,28 @@ flowchart LR
 
 ![Streamlit dashboard data quality view](docs/screenshots/streamlit-dashboard-detail.png)
 
+### Snowflake Mart Tables
+
+Snowflake screenshots are sanitized query-result captures generated from live Snowflake results with credentials and account identifiers omitted.
+
+![Snowflake mart tables](docs/screenshots/snowflake-marts-inventory.png)
+
+### Snowflake High-Value Cross-Border Metric
+
+![Snowflake high-value cross-border metric](docs/screenshots/snowflake-cross-border-result.png)
+
+### Snowflake Reconciliation Status
+
+![Snowflake reconciliation status](docs/screenshots/snowflake-reconciliation-status.png)
+
+### Airflow DAG Graph
+
+![Airflow DAG graph](docs/screenshots/airflow-dag-graph.png)
+
+### Airflow Successful Run
+
+![Airflow successful DAG run](docs/screenshots/airflow-dag-success-run.png)
+
 ## Repository Structure
 
 ```text
@@ -256,6 +278,4 @@ streamlit run dashboard\streamlit_app.py
 cd C:\regulatory-data-mart-ai-ready\airflow\docker
 docker compose up -d
 ```
-
-
 

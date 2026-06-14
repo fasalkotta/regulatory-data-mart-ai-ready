@@ -79,7 +79,7 @@ aggregated as (
             case
                 when transaction_status = 'SETTLED'
                 and customer_country_code <> entity_country_code
-                and settled_volume_usd >= 1
+                and settled_volume_usd >= 10000
                 then 1
                 else 0
             end
