@@ -1,6 +1,6 @@
 # AI-Ready Regulatory Data Mart
 
-Portfolio project for a Senior Analytics Engineer role focused on regulatory reporting, data quality, dbt modeling, Snowflake warehousing, Airflow orchestration, Streamlit reporting, and GitHub CI.
+Portfolio project focused on regulatory reporting, data quality, dbt modeling, Snowflake warehousing, Airflow orchestration, Streamlit reporting, and GitHub CI.
 
 The project turns raw operational extracts into governed reporting marts by legal entity, jurisdiction, and reporting month. It is designed to show how manual regulatory reporting work can be converted into reusable data infrastructure with clear ownership, tests, reconciliation, and AI-ready business definitions.
 
