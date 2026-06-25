@@ -158,7 +158,9 @@ select
     dq_rule_code,
     severity,
     count(*) as exception_count,
-    count(distinct transaction_id) as impacted_transaction_count
+    count(distinct transaction_id) as impacted_transaction_count,
+    case when datediff(day,reporting_month,current_date) >= 30 and Severity <> 'REVIEW' then 'Flagged' else 'Not Flagged' end as 30days_flagged
+
 from dq_events
 group by
     reporting_month,
